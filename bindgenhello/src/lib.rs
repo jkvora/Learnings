@@ -8,6 +8,7 @@ extern "C" {
 }
 
 
+//Export
 #[wasm_bindgen]
 pub fn hello(name:&str){
     alert(name)
