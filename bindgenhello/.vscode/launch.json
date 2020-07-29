@@ -7,8 +7,29 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug",
-            "program": "${workspaceFolder}",
+            "name": "Debug executable 'bindgenhello'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--lib=bindgenhello",
+                    "--package=bindgenhello"
+                ]
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'bindgenhello'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--lib=bindgenhello",
+                    "--package=bindgenhello"
+                ]
+            },
             "args": [],
             "cwd": "${workspaceFolder}"
         }
