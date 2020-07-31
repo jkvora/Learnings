@@ -31,17 +31,19 @@ extern "C" {
 #[wasm_bindgen]
 pub struct AudioData {
     left_channel: Vec<f32>,
-    right_channel: Vec<f32>
+    right_channel: Vec<f32>,
+    sample_rate:i32
 }
 
 #[wasm_bindgen]
 impl AudioData {
     #[wasm_bindgen(constructor)]
-    pub fn new(left:Vec<f32>,right:Vec<f32>) -> AudioData {
+    pub fn new(left:Vec<f32>,right:Vec<f32>,sample_rate:i32) -> AudioData {
         return AudioData
         {
             left_channel:left,
-            right_channel:right
+            right_channel:right,
+            sample_rate:sample_rate
         }
     }  
     
@@ -59,10 +61,13 @@ impl AudioData {
     pub fn get_delay_channel(&self,time:f32 ) -> Vec<f32> {
       
         let mut channel=self.right_channel.clone();
-        for signal in channel.iter_mut() {
+        let drop_nodes:usize=((self.sample_rate as f32)*time) as usize;
+        log_f32(drop_nodes as f32);
+        channel.drain(0..drop_nodes);
+        // for signal in channel.iter_mut() {
          
-          *signal= *signal*time
-        }
+        //   *signal= *time
+        // }
          return channel
     }
 }

@@ -83,8 +83,8 @@ window.onload = function () {
                    let leftChannel=buffer.getChannelData(0);
                    let rightChannel=buffer.getChannelData(1);
 
-                   let audio=new AudioData(leftChannel,rightChannel);
-                    let rightCh=audio.get_delay_channel(15)
+                   let audio=new AudioData(leftChannel,rightChannel,buffer.sampleRate);
+                    let rightCh=audio.get_delay_channel(0.1)
                    debugger;
                    buffer.copyToChannel(rightCh,1,0)
                    
