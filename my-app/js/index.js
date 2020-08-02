@@ -123,7 +123,7 @@ window.onload = function () {
 
                    let audio=new AudioData(leftChannel,rightChannel,buffer.sampleRate);
                     //let rightCh=audio.get_delay_channel(0.1);
-                    let  rightCh=audio.get_reverb_effect(0.8);
+                    let  rightCh=audio.get_reverb_effect(0.4);
                    debugger;
                    buffer.copyToChannel(rightCh,1,0);
                    buffer.copyToChannel(rightCh,0,0)

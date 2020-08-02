@@ -77,12 +77,12 @@ impl AudioData {
         let mut channel=self.right_channel.clone();
        
        
-        //let delay_sample :usize  = (0.005 * 441000.0) as usize; // assumes 44100 Hz sample rate
+        let delay_sample :usize  = (0.005 * 441000.0) as usize; // assumes 44100 Hz sample rate
       
 
-        for  i in 0..(self.right_channel.len()){
+        for  i in 0..(self.right_channel.len() - delay_sample){
             // WARNING: overflow potential
-            channel[i] += channel[i] * decay;
+            channel[i + delay_sample] += channel[i] * decay;
         }
 
          return channel
