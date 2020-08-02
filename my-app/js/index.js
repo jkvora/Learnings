@@ -1,5 +1,43 @@
+
+var analyserNode;
+window.setup=function setup() {
+    createCanvas(400, 400);
+    
+}
+window.draw=function draw() {
+    background(51);
+    if(audioContext && analyserNode){
+       
+        analyserNode.fftSize = 512;
+        var bufferLength = analyserNode.frequencyBinCount;
+        var dataArray = new Uint8Array(bufferLength);
+        analyserNode.getByteFrequencyData(dataArray);
+        
+        
+
+        // for(let i=0;i<(dataArray.length-dataArray.length/4);i++){
+        //     let myDegrees=i*angleStep;
+        //     let v = p5.Vector.fromAngle(radians(myDegrees), dataArray[i]);
+        //     line(height/2, width/2, v.x, v.y);
+        // }
+
+        for (let i = 0; i < dataArray.length; i++) {
+            //stroke(255);
+            let amp = dataArray[i];
+            let space_between_lines = width / 256;
+            let y = map(amp, 0, 256, height, 0);
+            //line(i*space_between_lines, height, i*space_between_lines, y);
+            fill(i,0,0); //remove stroke(255);
+            rect(i * space_between_lines, y, space_between_lines, height - y);
+          }
+    }
+}
+
+
+
 import workletUrl from 'worklet-loader!./processor.js';
-var audioModule=null;
+var audioModule;
+var audioContext;
 
 
 import("../pkg/index.js").then((mod) => {
@@ -25,7 +63,7 @@ class MyWorkletNode extends AudioWorkletNode {
 window.onload = function () {
     document.getElementById("start").onclick = function () {
         let context = new AudioContext();
-        debugger;
+       
         console.log(workletUrl);
         context.audioWorklet.addModule(workletUrl).then((data) => {
             // let node = new MyWorkletNode(context);
@@ -70,12 +108,12 @@ window.onload = function () {
         reader.onload = function (enc) {
         
             // Create an instance of AudioContext
-            var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
             // Asynchronously decode audio file data contained in an ArrayBuffer.
             audioContext.decodeAudioData(enc.target.result, function (buffer) {
                
-                debugger;
+              
                 const {numberOfChannels} = buffer;
                 if(numberOfChannels===2){
                    const { AudioData} = audioModule;
@@ -93,9 +131,10 @@ window.onload = function () {
                 audioContext.audioWorklet.addModule(workletUrl).then((data) => {
                     // let node = new MyWorkletNode(context);
         
-
+                    analyserNode = audioContext.createAnalyser();
 
                     let sourceNode = audioContext.createBufferSource();
+                    sourceNode.connect(analyserNode);
                     sourceNode.buffer=buffer;
                    // let gainWorkletNode = new AudioWorkletNode(audioContext, 'gain-processor');
         
@@ -119,7 +158,7 @@ window.onload = function () {
                     
                     // Connect the output of the merger to the downstream graph
                     //merger.connect(audioContext.destination)
-                    sourceNode.connect(audioContext.destination);
+                    analyserNode.connect(audioContext.destination);
                     sourceNode.start();
                     //sourceNode.connect(gainWorkletNode).connect(splitter).connect(delay,1,0).connect(merger, 0, 1).connect(audioContext.destination);
                     //sourceNode.connect(gainWorkletNode).connect(audioContext.destination);
@@ -130,8 +169,6 @@ window.onload = function () {
     }
 
         reader.readAsArrayBuffer(file);
-        var objectUrl = URL.createObjectURL(file);
-        debugger;
     }
 
 }
