@@ -70,4 +70,21 @@ impl AudioData {
         // }
          return channel
     }
+
+    #[wasm_bindgen]
+    pub fn get_reverb_effect(&self,decay:f32 ) -> Vec<f32> {
+      
+        let mut channel=self.right_channel.clone();
+       
+       
+        //let delay_sample :usize  = (0.005 * 441000.0) as usize; // assumes 44100 Hz sample rate
+      
+
+        for  i in 0..(self.right_channel.len()){
+            // WARNING: overflow potential
+            channel[i] += channel[i] * decay;
+        }
+
+         return channel
+    }
 }
