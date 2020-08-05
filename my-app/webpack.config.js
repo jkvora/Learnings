@@ -1,5 +1,6 @@
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
+const { VueLoaderPlugin } = require('vue-loader');
 const WasmPackPlugin = require("@wasm-tool/wasm-pack-plugin");
 
 const dist = path.resolve(__dirname, "dist");
@@ -19,12 +20,17 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.vue$/,
+        loader: 'vue-loader'
+    },
+      {
         test: /\.worklet\.js$/,
         use: { loader: 'worklet-loader' }
       }
     ]
   },
   plugins: [
+    new VueLoaderPlugin(),
     new CopyPlugin([
       path.resolve(__dirname, "static")
     ]),

@@ -1,4 +1,23 @@
 
+import Vue from 'vue'
+import App from './App.vue' // 程序入口
+import routes from './routes'
+
+// vueRouter
+import VueRouter from 'vue-router'
+Vue.use(VueRouter)
+console.log(routes);
+console.log(App);
+var router = new VueRouter({
+    routes
+  })
+
+  new Vue({
+    router,
+    render: h => h(App)
+}).$mount('#app')
+
+
 var analyserNode;
 window.setup=function setup() {
     createCanvas(400, 400);

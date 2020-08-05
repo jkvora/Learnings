@@ -17,12 +17,18 @@ function getUint8Memory0() {
 function getStringFromWasm0(ptr, len) {
     return cachedTextDecoder.decode(getUint8Memory0().subarray(ptr, ptr + len));
 }
+
+function _assertNum(n) {
+    if (typeof(n) !== 'number') throw new Error('expected a number argument');
+}
 /**
 * @param {number} x
 * @param {number} y
 * @returns {number}
 */
 export function add(x, y) {
+    _assertNum(x);
+    _assertNum(y);
     var ret = wasm.add(x, y);
     return ret;
 }
@@ -84,6 +90,7 @@ export class AudioData {
         var len0 = WASM_VECTOR_LEN;
         var ptr1 = passArrayF32ToWasm0(right, wasm.__wbindgen_malloc);
         var len1 = WASM_VECTOR_LEN;
+        _assertNum(sample_rate);
         var ret = wasm.audiodata_new(ptr0, len0, ptr1, len1, sample_rate);
         return AudioData.__wrap(ret);
     }
@@ -92,8 +99,10 @@ export class AudioData {
     */
     get_left_channel() {
         try {
+            if (this.ptr == 0) throw new Error('Attempt to use a moved value');
             const retptr = wasm.__wbindgen_export_1.value - 16;
             wasm.__wbindgen_export_1.value = retptr;
+            _assertNum(this.ptr);
             wasm.audiodata_get_left_channel(retptr, this.ptr);
             var r0 = getInt32Memory0()[retptr / 4 + 0];
             var r1 = getInt32Memory0()[retptr / 4 + 1];
@@ -109,8 +118,10 @@ export class AudioData {
     */
     get_right_channel() {
         try {
+            if (this.ptr == 0) throw new Error('Attempt to use a moved value');
             const retptr = wasm.__wbindgen_export_1.value - 16;
             wasm.__wbindgen_export_1.value = retptr;
+            _assertNum(this.ptr);
             wasm.audiodata_get_right_channel(retptr, this.ptr);
             var r0 = getInt32Memory0()[retptr / 4 + 0];
             var r1 = getInt32Memory0()[retptr / 4 + 1];
@@ -127,8 +138,10 @@ export class AudioData {
     */
     get_delay_channel(time) {
         try {
+            if (this.ptr == 0) throw new Error('Attempt to use a moved value');
             const retptr = wasm.__wbindgen_export_1.value - 16;
             wasm.__wbindgen_export_1.value = retptr;
+            _assertNum(this.ptr);
             wasm.audiodata_get_delay_channel(retptr, this.ptr, time);
             var r0 = getInt32Memory0()[retptr / 4 + 0];
             var r1 = getInt32Memory0()[retptr / 4 + 1];
@@ -145,8 +158,10 @@ export class AudioData {
     */
     get_reverb_effect(decay) {
         try {
+            if (this.ptr == 0) throw new Error('Attempt to use a moved value');
             const retptr = wasm.__wbindgen_export_1.value - 16;
             wasm.__wbindgen_export_1.value = retptr;
+            _assertNum(this.ptr);
             wasm.audiodata_get_reverb_effect(retptr, this.ptr, decay);
             var r0 = getInt32Memory0()[retptr / 4 + 0];
             var r1 = getInt32Memory0()[retptr / 4 + 1];
