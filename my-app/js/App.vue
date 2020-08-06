@@ -1,22 +1,26 @@
 <template>
-  <div id="app">
-    Hello <button @click="gotoview">Welcome</button>
+  <div class="app-view" id="app">
+    <tabs-vue></tabs-vue>
     <router-view></router-view>
   </div>
 </template>
 
 <script>
+import tabsVue from './views/tabs.vue'
+
+
 export default {
   name: 'app',
+  components:{
+    tabsVue
+  },
   data () {
     return {
-      title: 'Jalak'
+     
     }
   },
   methods: {
-   gotoview(){
-       this.$router.push({path:'/welcome-screen'})
-   }
+  
   },
   computed: {
   
@@ -24,6 +28,11 @@ export default {
 }
 </script>
 
-<style>
-  
+<style lang="less" scoped>
+ @import './main.less';
+
+.app-view{
+  display: flex;
+  color:green;
+}
 </style>

@@ -2,6 +2,8 @@ const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const { VueLoaderPlugin } = require('vue-loader');
 const WasmPackPlugin = require("@wasm-tool/wasm-pack-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const dist = path.resolve(__dirname, "dist");
 
@@ -22,7 +24,22 @@ module.exports = {
       {
         test: /\.vue$/,
         loader: 'vue-loader'
-    },
+      },
+      {
+        test: /\.less$/,
+        use: [
+          'vue-style-loader',
+          'css-loader',
+          'less-loader'
+        ]
+      },
+      {
+        test: /\.css$/,
+        use: [
+          'vue-style-loader',
+          'css-loader'
+        ]
+      },
       {
         test: /\.worklet\.js$/,
         use: { loader: 'worklet-loader' }
@@ -30,6 +47,10 @@ module.exports = {
     ]
   },
   plugins: [
+    new HtmlWebpackPlugin({
+      title: 'Sound Space',
+      template: 'static/index.html'
+    }),
     new VueLoaderPlugin(),
     new CopyPlugin([
       path.resolve(__dirname, "static")
