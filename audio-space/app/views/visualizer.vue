@@ -4,9 +4,12 @@
 
 <script>
 
-import { analyserNode, audioContext} from './../core';
+import {  audioContext} from './../core';
 export default {
   name: "visualizer",
+  props:{
+    analyserNode:{}
+  },
   data() {
     return {};
   },
@@ -21,11 +24,11 @@ export default {
       };
       window.draw = function draw() {
         background(51);
-        if (audioContext && analyserNode) {
-          analyserNode.fftSize = 512;
-          var bufferLength = analyserNode.frequencyBinCount;
+        if (audioContext && this.analyserNode) {
+          this.analyserNode.fftSize = 512;
+          var bufferLength = this.analyserNode.frequencyBinCount;
           var dataArray = new Uint8Array(bufferLength);
-          analyserNode.getByteFrequencyData(dataArray);
+          this.analyserNode.getByteFrequencyData(dataArray);
 
           // for(let i=0;i<(dataArray.length-dataArray.length/4);i++){
           //     let myDegrees=i*angleStep;
@@ -43,7 +46,7 @@ export default {
             rect(i * space_between_lines, y, space_between_lines, height - y);
           }
         }
-      };
+      }.bind(this);
     },
   }
 };
