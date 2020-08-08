@@ -3,6 +3,8 @@
 </template>
 
 <script>
+
+import { analyserNode, audioContext} from './../core';
 export default {
   name: "visualizer",
   data() {
@@ -13,7 +15,7 @@ export default {
   },
   methods: {
     createVisualizer() {
-      var analyserNode;
+     
       window.setup = function setup() {
         createCanvas(400, 400);
       };
