@@ -8,7 +8,7 @@ import {  audioContext} from './../core';
 export default {
   name: "visualizer",
   props:{
-    analyserNode:{}
+    analyser_node:{}
   },
   data() {
     return {};
@@ -23,6 +23,7 @@ export default {
         createCanvas(400, 400);
       };
       window.draw = function draw() {
+        console.log("draw");
         background(51);
         if (audioContext && this.analyserNode) {
           this.analyserNode.fftSize = 512;

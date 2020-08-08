@@ -1,7 +1,7 @@
 <template>
   <div>
     <input type="file" id="audio" value="Upload" />
-    <visualizer-vue :analyserNode="analyserNode"></visualizer-vue>
+    <visualizer-vue :analyser_node="analyserNode"></visualizer-vue>
   </div>
 </template>
 
