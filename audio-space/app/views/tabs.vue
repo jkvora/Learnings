@@ -1,7 +1,7 @@
 <template>
   <div class="left-container">
       <div class="name-container">
-        SoundSpace
+        Audio Space
       </div>
       <div v-for="(tab,id) in tabs" :key="id">
         <router-link class="tab" :to="tab.link"> {{tab.display}} </router-link>
