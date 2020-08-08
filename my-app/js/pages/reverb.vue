@@ -1,12 +1,12 @@
 <template>
   <div>
-      in welcome
+      Reverb
   </div>
 </template>
 
 <script>
 export default {
-  name: 'app',
+  name: 'reverb',
   data () {
     return {
       title: 'Jalak'
