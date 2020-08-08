@@ -16,8 +16,8 @@ export default {
     return {
       tabs: [
         {
-          display: "3d Sound",
-          link: "/3d-sound",
+          display: "3d Audio",
+          link: "/3d-audio",
         },
         {
           display: "Reverb",

@@ -1,12 +1,12 @@
 <template>
   <div>
-      3d audio
+     asjdasd
   </div>
 </template>
 
 <script>
 export default {
-  name: 'three-d',
+  name: '3d',
   data () {
     return {
       title: 'Jalak'
