@@ -10,7 +10,7 @@ const dist = path.resolve(__dirname, "dist");
 module.exports = {
   mode: "production",
   entry: {
-    index: "./js/index.js"
+    index: "./app/index.js"
   },
   output: {
     path: dist,
