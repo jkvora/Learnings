@@ -52,12 +52,13 @@ export default {
               buffer.copyToChannel(rightCh, 0, 0);
             }
             console.log(workletUrl);
-            audioContext.audioWorklet.addModule(workletUrl).then(async (data) => {
+            this.analyserNode = audioContext.createAnalyser();
+            audioContext.audioWorklet.addModule(workletUrl).then((data) => {
               // let node = new MyWorkletNode(context);
               //console.log(this.analyserNode);
-              debugger;
-            this.analyserNode = await audioContext.createAnalyser();
-
+             
+         
+ debugger;
               let sourceNode = audioContext.createBufferSource();
               sourceNode.connect(this.analyserNode);
               sourceNode.buffer = buffer;
@@ -88,11 +89,11 @@ export default {
               //sourceNode.connect(gainWorkletNode).connect(splitter).connect(delay,1,0).connect(merger, 0, 1).connect(audioContext.destination);
               //sourceNode.connect(gainWorkletNode).connect(audioContext.destination);
             });
-          });
-        };
+          }.bind(this));
+        }.bind(this);
 
         reader.readAsArrayBuffer(file);
-      };
+      }.bind(this);
     },
   },
 };

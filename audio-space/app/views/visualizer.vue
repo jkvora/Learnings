@@ -13,6 +13,11 @@ export default {
   data() {
     return {};
   },
+  watch:{
+    analyser_node(){
+      debugger;
+    }
+  },
   mounted() {
     this.createVisualizer();
   },
@@ -25,11 +30,11 @@ export default {
       window.draw = function draw() {
         console.log("draw");
         background(51);
-        if (audioContext && this.analyserNode) {
-          this.analyserNode.fftSize = 512;
-          var bufferLength = this.analyserNode.frequencyBinCount;
+        if (audioContext && this.analyser_node) {
+          this.analyser_node.fftSize = 512;
+          var bufferLength = this.analyser_node.frequencyBinCount;
           var dataArray = new Uint8Array(bufferLength);
-          this.analyserNode.getByteFrequencyData(dataArray);
+          this.analyser_node.getByteFrequencyData(dataArray);
 
           // for(let i=0;i<(dataArray.length-dataArray.length/4);i++){
           //     let myDegrees=i*angleStep;
