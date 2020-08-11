@@ -1,3 +1,6 @@
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/bd3100c7-8c8f-4729-9ea4-122051806908/deploy-status)](https://app.netlify.com/sites/audiospace/deploys)
+
 ## How to install
 
 ```sh
