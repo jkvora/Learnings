@@ -1,6 +1,10 @@
 <template>
   <div>
     <input type="file" id="audio" value="Upload" />
+    <div>
+      <input type="checkbox" id="delay" name="delay" v-model="isDelay">
+      <label for="delay"> Delay</label>
+    </div>
     <visualizer-vue :analyser_node="analyserNode"></visualizer-vue>
   </div>
 </template>
@@ -17,6 +21,7 @@ export default {
   data() {
     return {
       analyserNode: null,
+      isDelay:false
     };
   },
   mounted() {
@@ -45,11 +50,13 @@ export default {
                 rightChannel,
                 buffer.sampleRate
               );
-              //let rightCh=audio.get_delay_channel(0.1);
-              let rightCh = audio.get_reverb_effect(0.4);
+              if(this.isDelay){
+                let rightCh=audio.get_delay_channel(0.1);
+                buffer.copyToChannel(rightCh, 1, 0);
+              }
+              //let rightCh = audio.get_reverb_effect(0.4);
               debugger;
-              buffer.copyToChannel(rightCh, 1, 0);
-              buffer.copyToChannel(rightCh, 0, 0);
+              //buffer.copyToChannel(rightCh, 0, 0);
             }
             console.log(workletUrl);
             this.analyserNode = audioContext.createAnalyser();
