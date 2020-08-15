@@ -1,13 +1,17 @@
 <template>
   <div>
     <audio-upload @audio-change="onAudioChange"></audio-upload>
-    <!-- <button @click="onPausePlay">{{isPause?'Play':'Pause'}}</button> -->
-    <!-- <div>
-      <input type="checkbox" id="delay" name="delay" v-model="isDelay" />
-      <label for="delay">Delay</label>
-    </div> -->
-    <button class="demo" >Play Demo</button>
-    <visualizer :analyser_node="analyserNode"></visualizer>
+
+    <div class="controls">
+      <button class="btn">Play Demo</button>
+      <button class="btn" v-if="analyserNode" @click="onPausePlay">{{isPause?'Play':'Pause'}}</button>
+      <div>
+        <input type="checkbox" id="delay" name="delay" v-model="isEnable" />
+        <label for="delay">Enable</label>
+      </div>
+    </div>
+
+    <visualizer  v-if="analyserNode"  :analyser_node="analyserNode"></visualizer>
   </div>
 </template>
 
@@ -25,7 +29,7 @@ export default {
   data() {
     return {
       analyserNode: null,
-      isDelay: false,
+      isEnable: true,
       isPause: false,
     };
   },
@@ -62,17 +66,16 @@ export default {
               );
 
               //if 3d enabled
-              if (this.isDelay) {
+              if (this.isEnable) {
                 let rightCh = audio.get_delay_channel(0.1);
                 buffer.copyToChannel(rightCh, 1, 0);
               }
             }
-            
+
             this.analyserNode = audioContext.createAnalyser();
 
             //load audio worklet
             audioContext.audioWorklet.addModule(workletUrl).then((data) => {
-
               //create analyzer
               let sourceNode = audioContext.createBufferSource();
               sourceNode.connect(this.analyserNode);
@@ -92,14 +95,22 @@ export default {
 </script>
 
 <style lang="less">
-.demo{
-   background:var(--paleyellow);
-    padding:10px 50px;
-    color:white;
-    border:none;
+.controls{
+  background: #3e3d3d;
+  color:white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  .btn {
+    background: var(--paleyellow);
+    padding: 10px 50px;
+    color: white;
+    border: none;
     border-radius: 5px;
-    &:hover{
+    &:hover {
       cursor: pointer;
     }
+  }
 }
 </style>
