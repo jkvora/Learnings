@@ -139,7 +139,7 @@ export default {
     display: none;
   }
   label{
-    background:#9c9c1b;
+    background:var(--paleyellow);
     padding:10px 50px;
     border-radius: 5px;;
     cursor: pointer;

@@ -1,5 +1,5 @@
 <template>
-  <div class="left-container">
+  <div>
       <div class="name-container">
         Audio Space
       </div>
@@ -32,11 +32,6 @@ export default {
 </script>
 
 <style lang="less">
-.left-container{
-  width: 30%;
-  max-width: 250px;
-  height: 100vh;
-  background-color: var(--lightgray);
   .name-container{
     min-height: 200px;
      background-color: var(--darkgray);
@@ -56,9 +51,9 @@ export default {
     display: block;
     border-bottom: 1px solid var(--darkgray);
     &:hover{
-        background-color: #68682f;
+        background-color: var(--paleyellow);
         cursor: pointer;
     }
   }
-}
+
 </style>
