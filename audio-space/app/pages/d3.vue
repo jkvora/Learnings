@@ -1,6 +1,9 @@
 <template>
   <div>
-    <input type="file" id="audio" value="Upload" />
+    <div class="upload">
+      Select an audio file to upload
+        <input type="file" id="audio" class="button"  value="Upload" />
+    </div>
     <button @click="onPausePlay">{{isPause?'Play':'Pause'}}</button>
     <div>
       <input type="checkbox" id="delay" name="delay" v-model="isDelay">
@@ -119,4 +122,7 @@ export default {
 </script>
 
 <style>
+.upload{
+  background: #eeeeee;
+}
 </style>

@@ -28,9 +28,11 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
- @import './main.less';
+<style lang="less">
+@import './main.less';
+</style>
 
+<style lang="less" scoped>
 .app-view{
   display: flex;
   color:green;

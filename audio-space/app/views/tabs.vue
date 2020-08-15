@@ -36,10 +36,10 @@ export default {
   width: 30%;
   max-width: 250px;
   height: 100vh;
-  background-color: #565656;
+  background-color: var(--darkgray);
   .name-container{
     min-height: 200px;
-     background-color: #222222;
+     background-color: var(--lightgray);
      color: white;
      display: flex;
      justify-content: center;
@@ -48,7 +48,7 @@ export default {
   }
   .tab{
     color: white;
-    background-color: #565656;
+    background-color: var(--darkgray);
     padding:20px;
     display: flex;
     text-decoration: none;
