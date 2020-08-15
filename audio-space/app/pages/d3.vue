@@ -1,6 +1,7 @@
 <template>
   <div>
     <input type="file" id="audio" value="Upload" />
+    <button @click="onPausePlay">{{isPause?'Play':'Pause'}}</button>
     <div>
       <input type="checkbox" id="delay" name="delay" v-model="isDelay">
       <label for="delay"> Delay</label>
@@ -21,13 +22,24 @@ export default {
   data() {
     return {
       analyserNode: null,
-      isDelay:false
+      isDelay:false,
+      isPause:false
     };
   },
   mounted() {
     this.hookAudio();
   },
   methods: {
+    onPausePlay(){
+      console.log(audioContext);
+      this.isPause=!this.isPause;
+      if(this.isPause){
+        audioContext.suspend();
+      }
+      else{
+        audioContext.resume();
+      }
+    },
     hookAudio() {
       document.getElementById("audio").onchange = function (event) {
         var file = event.currentTarget.files[0];
@@ -55,7 +67,7 @@ export default {
                 buffer.copyToChannel(rightCh, 1, 0);
               }
               //let rightCh = audio.get_reverb_effect(0.4);
-              debugger;
+              
               //buffer.copyToChannel(rightCh, 0, 0);
             }
             console.log(workletUrl);
@@ -65,7 +77,7 @@ export default {
               //console.log(this.analyserNode);
              
          
- debugger;
+ 
               let sourceNode = audioContext.createBufferSource();
               sourceNode.connect(this.analyserNode);
               sourceNode.buffer = buffer;
