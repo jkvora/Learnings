@@ -25,7 +25,7 @@ export default {
   },
   methods: {
     setup() {
-      p5Instance.createCanvas(this.$el.offsetWidth, 400);
+      p5Instance.createCanvas(this.$el.offsetWidth, document.body.clientHeight - this.$el.offsetTop);
     },
     draw() {
       console.log("draw");
