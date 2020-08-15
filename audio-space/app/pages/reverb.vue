@@ -1,26 +1,93 @@
 <template>
   <div>
-      Reverb
+    <audio-upload @audio-change="onAudioChange"></audio-upload>
+    <button @click="onPausePlay">{{isPause?'Play':'Pause'}}</button>
+    <div>
+      <input type="checkbox" id="delay" name="delay" v-model="isDelay" />
+      <label for="delay">Delay</label>
+    </div>
+    <visualizer :analyser_node="analyserNode"></visualizer>
   </div>
 </template>
 
 <script>
+import { audioContext, workletUrl, audioModule } from "./../core";
+import visualizer from "./../views/visualizer.vue";
+import audioUpload from "./../views/audio-upload.vue";
+
 export default {
-  name: 'reverb',
-  data () {
+  name: "reverb",
+  components: {
+    visualizer,
+    audioUpload,
+  },
+  data() {
     return {
-      title: 'Jalak'
-    }
+      analyserNode: null,
+      isDelay: false,
+      isPause: false,
+    };
   },
+  mounted() {},
   methods: {
-   
+    onPausePlay() {
+      console.log(audioContext);
+      this.isPause = !this.isPause;
+      if (this.isPause) {
+        audioContext.suspend();
+      } else {
+        audioContext.resume();
+      }
+    },
+    onAudioChange(event) {
+      var file = event.currentTarget.files[0];
+      let reader = new FileReader();
+
+      reader.onload = function (enc) {
+        // Asynchronously decode audio file data contained in an ArrayBuffer.
+        audioContext.decodeAudioData(
+          enc.target.result,
+          function (buffer) {
+            const { numberOfChannels } = buffer;
+            if (numberOfChannels === 2) {
+              const { AudioData } = audioModule;
+
+              let leftChannel = buffer.getChannelData(0);
+              let rightChannel = buffer.getChannelData(1);
+
+              let audio = new AudioData(
+                leftChannel,
+                rightChannel,
+                buffer.sampleRate
+              );
+              if (this.isDelay) {
+                let channelData = audio.get_reverb_effect(0.4);
+                buffer.copyToChannel(channelData, 1, 0);
+                buffer.copyToChannel(channelData, 0, 0);
+              }
+            }
+
+            this.analyserNode = audioContext.createAnalyser();
+
+            //load audio worklet
+            audioContext.audioWorklet.addModule(workletUrl).then((data) => {
+              //create analyzer
+              let sourceNode = audioContext.createBufferSource();
+              sourceNode.connect(this.analyserNode);
+              sourceNode.buffer = buffer;
+
+              this.analyserNode.connect(audioContext.destination);
+              sourceNode.start();
+            });
+          }.bind(this)
+        );
+      }.bind(this);
+
+      reader.readAsArrayBuffer(file);
+    },
   },
-  computed: {
-  
-  }
-}
+};
 </script>
 
-<style>
-  
+<style lang="less">
 </style>

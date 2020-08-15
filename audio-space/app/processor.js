@@ -1,6 +1,6 @@
 class MyWorkletProcessor extends AudioWorkletProcessor {
     constructor() {
-        
+
         super()
     }
     static get parameterDescriptors() {
@@ -8,7 +8,7 @@ class MyWorkletProcessor extends AudioWorkletProcessor {
     }
 
     process(inputs, outputs, parameters) {
-        
+
         const input = inputs[0];
         const output = outputs[0];
         const gain = parameters.gain;
