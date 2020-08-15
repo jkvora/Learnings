@@ -3,7 +3,7 @@
     <audio-upload @audio-change="onAudioChange"></audio-upload>
 
     <div class="controls">
-      <button class="btn">Play Demo</button>
+      <button class="btn" @click="fetchDemo">Play Demo</button>
       <button class="btn" v-if="analyserNode" @click="onPausePlay">{{isPause?'Play':'Pause'}}</button>
       <div>
         <input type="checkbox" id="delay" name="delay" v-model="isEnable" />
@@ -11,7 +11,7 @@
       </div>
     </div>
 
-    <visualizer  v-if="analyserNode"  :analyser_node="analyserNode"></visualizer>
+    <visualizer v-if="analyserNode" :analyser_node="analyserNode"></visualizer>
   </div>
 </template>
 
@@ -35,6 +35,17 @@ export default {
   },
   mounted() {},
   methods: {
+    fetchDemo() {
+      fetch("./assets/media/Prateek Kuhad-100.mp3")
+        .then((response) => response.arrayBuffer())
+        .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
+        .then((audioBuffer) => {
+          this.playAudio(audioBuffer);
+        })
+        .catch((err) => {
+          debugger;
+        });
+    },
     onPausePlay() {
       this.isPause = !this.isPause;
       if (this.isPause) {
@@ -42,6 +53,36 @@ export default {
       } else {
         audioContext.resume();
       }
+    },
+    playAudio(buffer) {
+      const { numberOfChannels } = buffer;
+      if (numberOfChannels === 2) {
+        const { AudioData } = audioModule;
+
+        let leftChannel = buffer.getChannelData(0);
+        let rightChannel = buffer.getChannelData(1);
+
+        let audio = new AudioData(leftChannel, rightChannel, buffer.sampleRate);
+
+        //if 3d enabled
+        if (this.isEnable) {
+          let rightCh = audio.get_delay_channel(0.1);
+          buffer.copyToChannel(rightCh, 1, 0);
+        }
+      }
+
+      this.analyserNode = audioContext.createAnalyser();
+
+      //load audio worklet
+      audioContext.audioWorklet.addModule(workletUrl).then((data) => {
+        //create analyzer
+        let sourceNode = audioContext.createBufferSource();
+        sourceNode.connect(this.analyserNode);
+        sourceNode.buffer = buffer;
+
+        this.analyserNode.connect(audioContext.destination);
+        sourceNode.start();
+      });
     },
     onAudioChange(event) {
       var file = event.currentTarget.files[0];
@@ -52,38 +93,7 @@ export default {
         audioContext.decodeAudioData(
           enc.target.result,
           function (buffer) {
-            const { numberOfChannels } = buffer;
-            if (numberOfChannels === 2) {
-              const { AudioData } = audioModule;
-
-              let leftChannel = buffer.getChannelData(0);
-              let rightChannel = buffer.getChannelData(1);
-
-              let audio = new AudioData(
-                leftChannel,
-                rightChannel,
-                buffer.sampleRate
-              );
-
-              //if 3d enabled
-              if (this.isEnable) {
-                let rightCh = audio.get_delay_channel(0.1);
-                buffer.copyToChannel(rightCh, 1, 0);
-              }
-            }
-
-            this.analyserNode = audioContext.createAnalyser();
-
-            //load audio worklet
-            audioContext.audioWorklet.addModule(workletUrl).then((data) => {
-              //create analyzer
-              let sourceNode = audioContext.createBufferSource();
-              sourceNode.connect(this.analyserNode);
-              sourceNode.buffer = buffer;
-
-              this.analyserNode.connect(audioContext.destination);
-              sourceNode.start();
-            });
+            this.playAudio(buffer);
           }.bind(this)
         );
       }.bind(this);
@@ -95,9 +105,9 @@ export default {
 </script>
 
 <style lang="less">
-.controls{
+.controls {
   background: #3e3d3d;
-  color:white;
+  color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
