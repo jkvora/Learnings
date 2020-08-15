@@ -20,17 +20,18 @@ export default {
     },
   },
   mounted() {
+    debugger;
     this.createVisualizer();
   },
   methods: {
     setup() {
-      p5Instance.createCanvas(400, 400);
+      p5Instance.createCanvas(this.$el.offsetWidth, 450);
     },
     draw() {
       console.log("draw");
       p5Instance.background(51);
       if (audioContext && this.analyser_node) {
-        this.analyser_node.fftSize = 512;
+        //this.analyser_node.fftSize = 512;
         var bufferLength = this.analyser_node.frequencyBinCount;
         var dataArray = new Uint8Array(bufferLength);
         this.analyser_node.getByteFrequencyData(dataArray);
@@ -44,7 +45,7 @@ export default {
         for (let i = 0; i < dataArray.length; i++) {
           //stroke(255);
           let amp = dataArray[i];
-          let space_between_lines = p5Instance.width / 256;
+          let space_between_lines = p5Instance.width / 128;
           let y = p5Instance.map(amp, 0, 256, p5Instance.height, 0);
           //line(i*space_between_lines, height, i*space_between_lines, y);
           p5Instance.fill(i, 0, 0); //remove stroke(255);
@@ -60,6 +61,9 @@ export default {
       p5Instance=new p5(sketch, this.$refs.container);
     }
   },
+  destroyed(){
+    p5Instance=null;
+  }
 };
 </script>
 

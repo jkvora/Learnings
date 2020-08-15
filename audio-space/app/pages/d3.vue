@@ -1,11 +1,12 @@
 <template>
   <div>
     <audio-upload @audio-change="onAudioChange"></audio-upload>
-    <button @click="onPausePlay">{{isPause?'Play':'Pause'}}</button>
-    <div>
+    <!-- <button @click="onPausePlay">{{isPause?'Play':'Pause'}}</button> -->
+    <!-- <div>
       <input type="checkbox" id="delay" name="delay" v-model="isDelay" />
       <label for="delay">Delay</label>
-    </div>
+    </div> -->
+    <button class="demo" >Play Demo</button>
     <visualizer :analyser_node="analyserNode"></visualizer>
   </div>
 </template>
@@ -91,4 +92,14 @@ export default {
 </script>
 
 <style lang="less">
+.demo{
+   background:var(--paleyellow);
+    padding:10px 50px;
+    color:white;
+    border:none;
+    border-radius: 5px;
+    &:hover{
+      cursor: pointer;
+    }
+}
 </style>
