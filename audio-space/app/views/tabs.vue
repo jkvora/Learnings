@@ -36,10 +36,10 @@ export default {
   width: 30%;
   max-width: 250px;
   height: 100vh;
-  background-color: var(--darkgray);
+  background-color: var(--lightgray);
   .name-container{
     min-height: 200px;
-     background-color: var(--lightgray);
+     background-color: var(--darkgray);
      color: white;
      display: flex;
      justify-content: center;
@@ -48,11 +48,13 @@ export default {
   }
   .tab{
     color: white;
-    background-color: var(--darkgray);
+    background-color: var(--lightgray);
     padding:20px;
     display: flex;
     text-decoration: none;
-    justify-self: center;
+    text-align: center;;
+    display: block;
+    border-bottom: 1px solid var(--darkgray);
     &:hover{
         background-color: #68682f;
         cursor: pointer;

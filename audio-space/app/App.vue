@@ -1,7 +1,7 @@
 <template>
   <div class="app-view" id="app">
     <tabs-vue></tabs-vue>
-    <router-view></router-view>
+    <router-view class="content"></router-view>
   </div>
 </template>
 
@@ -35,6 +35,9 @@ export default {
 <style lang="less" scoped>
 .app-view{
   display: flex;
-  color:green;
+  .content{
+    flex:1;
+    border-radius: 10px;
+  }
 }
 </style>
