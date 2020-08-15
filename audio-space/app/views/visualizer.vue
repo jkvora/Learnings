@@ -1,5 +1,5 @@
 <template>
-  <div id="container"></div>
+  <div ref="container"></div>
 </template>
 
 <script>
@@ -57,7 +57,7 @@ export default {
         p.setup = this.setup.bind(p);
         p.draw = this.draw.bind(p);
       }.bind(this);
-      p5Instance=new p5(sketch, window.document.getElementById("container"));
+      p5Instance=new p5(sketch, this.$refs.container);
     }
   },
 };
