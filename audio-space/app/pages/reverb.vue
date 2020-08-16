@@ -1,84 +1,123 @@
 <template>
   <div>
     <audio-upload @audio-change="onAudioChange"></audio-upload>
-    <button @click="onPausePlay">{{isPause?'Play':'Pause'}}</button>
-    <div>
-      <input type="checkbox" id="delay" name="delay" v-model="isDelay" />
-      <label for="delay">Delay</label>
-    </div>
-    <visualizer :analyser_node="analyserNode"></visualizer>
+    <controls
+      :analyser_node="analyserNode"
+      :options="options"
+      @fetch-demo="fetchDemo"
+      @pause-play="onPausePlay"
+      @close-audio="closeAudioContext"
+      @update-effect="options.isEnable=!options.isEnable"
+    />
+    <visualizer v-if="analyserNode" :analyser_node="analyserNode"></visualizer>
   </div>
 </template>
 
 <script>
-import { audioContext, workletUrl, audioModule } from "./../core";
+import {
+  audioContext,
+  workletUrl,
+  audioModule,
+  createAudioInstance,
+  setAudioContext,
+} from "./../core";
 import visualizer from "./../views/visualizer.vue";
 import audioUpload from "./../views/audio-upload.vue";
+import controls from "./../views/controls.vue";
+
+const filename = "Prateek Kuhad-100.mp3";
 
 export default {
   name: "reverb",
   components: {
     visualizer,
     audioUpload,
+    controls,
   },
   data() {
     return {
       analyserNode: null,
-      isDelay: false,
-      isPause: false,
+      options: {
+        isEnable: true,
+        isPause: false,
+      },
     };
   },
   mounted() {},
   methods: {
+    fetchDemo() {
+      fetch(`./assets/media/${filename}`)
+        .then((response) => response.arrayBuffer())
+        .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
+        .then((audioBuffer) => {
+          this.playAudio(audioBuffer);
+        })
+        .catch((err) => {
+          debugger;
+        });
+    },
+    closeAudioContext() {
+      if (audioContext) {
+        audioContext.close();
+        this.analyserNode = null;
+        this.options.isPause=false;
+      }
+    },
     onPausePlay() {
-      console.log(audioContext);
-      this.isPause = !this.isPause;
-      if (this.isPause) {
+      this.options.isPause = !this.options.isPause;
+      if (this.options.isPause) {
         audioContext.suspend();
       } else {
         audioContext.resume();
       }
     },
+    playAudio(buffer) {
+      if (audioContext) {
+        debugger;
+        if (audioContext.state != "closed") {
+          this.closeAudioContext();
+        }
+        setAudioContext(createAudioInstance());
+      }
+      const { numberOfChannels } = buffer;
+      if (numberOfChannels === 2) {
+        const { AudioData } = audioModule;
+
+        let leftChannel = buffer.getChannelData(0);
+        let rightChannel = buffer.getChannelData(1);
+
+        let audio = new AudioData(leftChannel, rightChannel, buffer.sampleRate);
+
+        //if reverb enabled
+        if (this.options.isEnable) {
+          let channelData = audio.get_reverb_effect(0.4);
+          buffer.copyToChannel(channelData, 1, 0);
+          buffer.copyToChannel(channelData, 0, 0);
+        }
+      }
+
+      this.analyserNode = audioContext.createAnalyser();
+
+      //load audio worklet
+      audioContext.audioWorklet.addModule(workletUrl).then((data) => {
+        //create analyzer
+        let sourceNode = audioContext.createBufferSource();
+        sourceNode.connect(this.analyserNode);
+        sourceNode.buffer = buffer;
+
+        this.analyserNode.connect(audioContext.destination);
+        sourceNode.start();
+      });
+    },
     onAudioChange(event) {
       var file = event.currentTarget.files[0];
       let reader = new FileReader();
-
       reader.onload = function (enc) {
         // Asynchronously decode audio file data contained in an ArrayBuffer.
         audioContext.decodeAudioData(
           enc.target.result,
           function (buffer) {
-            const { numberOfChannels } = buffer;
-            if (numberOfChannels === 2) {
-              const { AudioData } = audioModule;
-
-              let leftChannel = buffer.getChannelData(0);
-              let rightChannel = buffer.getChannelData(1);
-
-              let audio = new AudioData(
-                leftChannel,
-                rightChannel,
-                buffer.sampleRate
-              );
-              if (this.isDelay) {
-                let channelData = audio.get_reverb_effect(0.4);
-                buffer.copyToChannel(channelData, 1, 0);
-                buffer.copyToChannel(channelData, 0, 0);
-              }
-            }
-
-            this.analyserNode = audioContext.createAnalyser();
-
-            //load audio worklet
-            audioContext.audioWorklet.addModule(workletUrl).then((data) => {
-              //create analyzer
-              let sourceNode = audioContext.createBufferSource();
-              sourceNode.connect(this.analyserNode);
-              sourceNode.buffer = buffer;
-
-              this.analyserNode.connect(audioContext.destination);
-              sourceNode.start();
-            });
+            this.playAudio(buffer);
           }.bind(this)
         );
       }.bind(this);
