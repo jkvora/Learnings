@@ -1,10 +1,16 @@
 
 import workletUrl from 'worklet-loader!./../processor.js';
 
+function createAudioInstance() {
+    return new (window.AudioContext ||
+        window.webkitAudioContext)();
+}
+function setAudioContext(context) {
+    audioContext=context
+}
 
 // Create an instance of AudioContext
-var audioContext = new (window.AudioContext ||
-    window.webkitAudioContext)();
+var audioContext=createAudioInstance();
 
 
 var analyserNode={};
@@ -21,5 +27,7 @@ export {
     analyserNode,
     audioContext,
     audioModule,
-    workletUrl
+    workletUrl,
+    createAudioInstance,
+    setAudioContext
 }

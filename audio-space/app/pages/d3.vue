@@ -5,7 +5,8 @@
     <div class="controls">
       <button class="btn" @click="fetchDemo">Play Demo</button>
       <template v-if="analyserNode">
-        <img  class="icon" :src="isPause?'assets/play.png':'assets/pause.png'" @click="onPausePlay"/>
+        <img class="icon" :src="isPause?'assets/play.png':'assets/pause.png'" @click="onPausePlay" />
+        <img class="icon" src="assets/stop.png" @click="closeAudioContext" />
       </template>
       <div>
         <input type="checkbox" id="delay" name="delay" v-model="isEnable" />
@@ -18,7 +19,13 @@
 </template>
 
 <script>
-import { audioContext, workletUrl, audioModule } from "./../core";
+import {
+  audioContext,
+  workletUrl,
+  audioModule,
+  createAudioInstance,
+  setAudioContext,
+} from "./../core";
 import visualizer from "./../views/visualizer.vue";
 import audioUpload from "./../views/audio-upload.vue";
 
@@ -48,6 +55,12 @@ export default {
           debugger;
         });
     },
+    closeAudioContext() {
+      if (audioContext) {
+        audioContext.close();
+        this.analyserNode=null;
+      }
+    },
     onPausePlay() {
       this.isPause = !this.isPause;
       if (this.isPause) {
@@ -57,6 +70,13 @@ export default {
       }
     },
     playAudio(buffer) {
+      if (audioContext) {
+        debugger;
+        if(audioContext.state!='closed'){
+           this.closeAudioContext();
+        }
+        setAudioContext(createAudioInstance());
+      }
       const { numberOfChannels } = buffer;
       if (numberOfChannels === 2) {
         const { AudioData } = audioModule;
@@ -89,7 +109,6 @@ export default {
     onAudioChange(event) {
       var file = event.currentTarget.files[0];
       let reader = new FileReader();
-
       reader.onload = function (enc) {
         // Asynchronously decode audio file data contained in an ArrayBuffer.
         audioContext.decodeAudioData(
@@ -114,8 +133,8 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  .icon{
-    width: 24px;;
+  .icon {
+    width: 24px;
     cursor: pointer;
   }
   .btn {
