@@ -1,19 +1,14 @@
 <template>
   <div>
     <audio-upload @audio-change="onAudioChange"></audio-upload>
-
-    <div class="controls">
-      <button class="btn" @click="fetchDemo">Play Demo</button>
-      <template v-if="analyserNode">
-        <img class="icon" :src="isPause?'assets/play.png':'assets/pause.png'" @click="onPausePlay" />
-        <img class="icon" src="assets/stop.png" @click="closeAudioContext" />
-      </template>
-      <div>
-        <input type="checkbox" id="delay" name="delay" v-model="isEnable" />
-        <label for="delay">Enable</label>
-      </div>
-    </div>
-
+    <controls
+      :analyser_node="analyserNode"
+      :options="options"
+      @fetch-demo="fetchDemo"
+      @pause-play="onPausePlay"
+      @close-audio="closeAudioContext"
+      @update-effect="options.isEnable=!options.isEnable"
+    />
     <visualizer v-if="analyserNode" :analyser_node="analyserNode"></visualizer>
   </div>
 </template>
@@ -28,24 +23,30 @@ import {
 } from "./../core";
 import visualizer from "./../views/visualizer.vue";
 import audioUpload from "./../views/audio-upload.vue";
+import controls from "./../views/controls.vue";
+
+const filename = "Prateek Kuhad-100.mp3";
 
 export default {
   name: "d3",
   components: {
     visualizer,
     audioUpload,
+    controls,
   },
   data() {
     return {
       analyserNode: null,
-      isEnable: true,
-      isPause: false,
+      options: {
+        isEnable: true,
+        isPause: false,
+      },
     };
   },
   mounted() {},
   methods: {
     fetchDemo() {
-      fetch("./assets/media/Prateek Kuhad-100.mp3")
+      fetch(`./assets/media/${filename}`)
         .then((response) => response.arrayBuffer())
         .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
         .then((audioBuffer) => {
@@ -58,12 +59,13 @@ export default {
     closeAudioContext() {
       if (audioContext) {
         audioContext.close();
-        this.analyserNode=null;
+        this.analyserNode = null;
+        this.options.isPause=false;
       }
     },
     onPausePlay() {
-      this.isPause = !this.isPause;
-      if (this.isPause) {
+      this.options.isPause = !this.options.isPause;
+      if (this.options.isPause) {
         audioContext.suspend();
       } else {
         audioContext.resume();
@@ -72,8 +74,8 @@ export default {
     playAudio(buffer) {
       if (audioContext) {
         debugger;
-        if(audioContext.state!='closed'){
-           this.closeAudioContext();
+        if (audioContext.state != "closed") {
+          this.closeAudioContext();
         }
         setAudioContext(createAudioInstance());
       }
@@ -87,7 +89,7 @@ export default {
         let audio = new AudioData(leftChannel, rightChannel, buffer.sampleRate);
 
         //if 3d enabled
-        if (this.isEnable) {
+        if (this.options.isEnable) {
           let rightCh = audio.get_delay_channel(0.1);
           buffer.copyToChannel(rightCh, 1, 0);
         }
@@ -126,26 +128,4 @@ export default {
 </script>
 
 <style lang="less">
-.controls {
-  background: #3e3d3d;
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  .icon {
-    width: 24px;
-    cursor: pointer;
-  }
-  .btn {
-    background: var(--paleyellow);
-    padding: 10px 50px;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    &:hover {
-      cursor: pointer;
-    }
-  }
-}
 </style>
