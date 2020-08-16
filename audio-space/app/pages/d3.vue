@@ -4,7 +4,9 @@
 
     <div class="controls">
       <button class="btn" @click="fetchDemo">Play Demo</button>
-      <button class="btn" v-if="analyserNode" @click="onPausePlay">{{isPause?'Play':'Pause'}}</button>
+      <template v-if="analyserNode">
+        <img  class="icon" :src="isPause?'assets/play.png':'assets/pause.png'" @click="onPausePlay"/>
+      </template>
       <div>
         <input type="checkbox" id="delay" name="delay" v-model="isEnable" />
         <label for="delay">Enable</label>
@@ -112,6 +114,10 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 20px;
+  .icon{
+    width: 24px;;
+    cursor: pointer;
+  }
   .btn {
     background: var(--paleyellow);
     padding: 10px 50px;
