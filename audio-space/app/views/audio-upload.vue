@@ -16,7 +16,7 @@
         @change="onAudioChange"
       />
       <div>
-        <label for="audio"  :class="{disabled: analyser_node}">Browse</label>
+        <label for="audio" :class="{disabled: analyser_node}">Browse</label>
       </div>
     </div>
   </div>
@@ -35,9 +35,9 @@ export default {
     onAudioChange(event) {
       this.$emit("audio-change", event);
     },
-     playDemo(){
-          this.$emit('play-demo')
-      }
+    playDemo() {
+      this.$emit("play-demo");
+    },
   },
   computed: {},
 };
@@ -50,26 +50,26 @@ export default {
   color: white;
   width: 100%;
   padding: 30px 0px;
-  display: flex;;
+  display: flex;
   justify-content: center;
   align-items: center;
 
-.btn {
+  .btn {
     background: var(--paleyellow);
     padding: 10px 50px;
     color: white;
     border: none;
     border-radius: 5px;
-    font-size:16px;
+    font-size: 16px;
     cursor: pointer;
   }
-  .disabled{
+  .disabled {
     pointer-events: none;
     opacity: 0.5;
     cursor: not-allowed;
   }
-  .block{
-    margin:0px 20px;
+  .block {
+    margin: 0px 20px;
   }
   h3 {
     font-weight: normal;
