@@ -61,14 +61,12 @@ export default {
     border: none;
     border-radius: 5px;
     font-size:16px;
-    &:hover {
-      cursor: pointer;
-    }
+    cursor: pointer;
   }
   .disabled{
     pointer-events: none;
     opacity: 0.5;
-   
+    cursor: not-allowed;
   }
   .block{
     margin:0px 20px;
