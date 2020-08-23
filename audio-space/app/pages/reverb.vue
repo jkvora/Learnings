@@ -44,8 +44,9 @@ export default {
   mounted() {},
   methods: {
     playDemo() {
+      let copyDemoBuffer=demoAudioBuffer.slice();
       audioContext
-        .decodeAudioData(demoAudioBuffer)
+        .decodeAudioData(copyDemoBuffer)
         .then((audioBuffer) => {
           this.playAudio(audioBuffer);
         })
