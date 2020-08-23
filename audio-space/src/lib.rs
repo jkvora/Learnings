@@ -1,10 +1,6 @@
 use wasm_bindgen::prelude::*;
 
 
-#[wasm_bindgen]
-pub fn add(x:i32,y:i32) -> i32 {
-    return x+y;
-}
 
 #[wasm_bindgen]
 extern "C" {
@@ -64,10 +60,7 @@ impl AudioData {
         let drop_nodes:usize=((self.sample_rate as f32)*time) as usize;
         log_f32(drop_nodes as f32);
         channel.drain(0..drop_nodes);
-        // for signal in channel.iter_mut() {
-         
-        //   *signal= *time
-        // }
+    
          return channel
     }
 
@@ -75,11 +68,10 @@ impl AudioData {
     pub fn get_reverb_effect(&self,decay:f32 ) -> Vec<f32> {
       
         let mut channel=self.right_channel.clone();
-       
-       
-        let delay_sample :usize  = (0.005 * 441000.0) as usize; // assumes 44100 Hz sample rate
+        
+        // assumes 44100 Hz sample rate
+        let delay_sample :usize  = (0.005 * 441000.0) as usize; 
       
-
         for  i in 0..(self.right_channel.len() - delay_sample){
             // WARNING: overflow potential
             channel[i + delay_sample] += channel[i] * decay;

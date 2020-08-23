@@ -1,10 +1,9 @@
 <template>
   <div>
-    <audio-upload @audio-change="onAudioChange"></audio-upload>
+    <audio-upload :analyser_node="analyserNode" @audio-change="onAudioChange"  @play-demo="playDemo"></audio-upload>
     <controls
       :analyser_node="analyserNode"
       :options="options"
-      @fetch-demo="fetchDemo"
       @pause-play="onPausePlay"
       @close-audio="closeAudioContext"
       @update-effect="options.isEnable=!options.isEnable"
@@ -20,12 +19,11 @@ import {
   audioModule,
   createAudioInstance,
   setAudioContext,
+  demoAudioBuffer,
 } from "./../core";
 import visualizer from "./../views/visualizer.vue";
 import audioUpload from "./../views/audio-upload.vue";
 import controls from "./../views/controls.vue";
-
-const filename = "Prateek Kuhad-100.mp3";
 
 export default {
   name: "reverb",
@@ -45,10 +43,9 @@ export default {
   },
   mounted() {},
   methods: {
-    fetchDemo() {
-      fetch(`./assets/media/${filename}`)
-        .then((response) => response.arrayBuffer())
-        .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
+    playDemo() {
+      audioContext
+        .decodeAudioData(demoAudioBuffer)
         .then((audioBuffer) => {
           this.playAudio(audioBuffer);
         })
@@ -60,7 +57,7 @@ export default {
       if (audioContext) {
         audioContext.close();
         this.analyserNode = null;
-        this.options.isPause=false;
+        this.options.isPause = false;
       }
     },
     onPausePlay() {
