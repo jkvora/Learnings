@@ -1,6 +1,5 @@
 <template>
   <div class="controls">
-    <button v-if="!analyser_node" class="btn" @click="fetchDemo">Play Demo</button>
     <template v-if="analyser_node">
       <img class="icon" :src="options.isPause?'assets/play.png':'assets/pause.png'" @click="onPausePlay" />
       <img class="icon" src="assets/stop.png" @click="closeAudioContext" />
@@ -52,15 +51,6 @@ export default {
     width: 24px;
     cursor: pointer;
   }
-  .btn {
-    background: var(--paleyellow);
-    padding: 10px 50px;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    &:hover {
-      cursor: pointer;
-    }
-  }
+
 }
 </style>
